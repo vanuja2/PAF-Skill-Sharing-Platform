@@ -1,5 +1,10 @@
 package com.skillshare.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.data.mongodb.core.mapping.Field;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,5 +19,12 @@ public class ProgressTemplate {
     
     @Builder.Default
     private List<String> completed = new ArrayList<>();
+    
+    @Field("skills_learned")
+    @Builder.Default
+    private List<String> skillsLearned = new ArrayList<>();
+    
+    @Field("project_details")
+    private ProjectDetails projectDetails;
     
     
