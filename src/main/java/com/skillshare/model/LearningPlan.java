@@ -24,3 +24,8 @@ public class LearningPlan {
     private String title;
     private String thumbnail;
     private String skill;
+
+    @Field("skill_level")
+    private String skillLevel;
+    
+    private String description;
