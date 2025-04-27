@@ -152,5 +152,11 @@ public class LearningPlanController {
                     learningPlanRepository.deleteById(id);
                     return ResponseEntity.ok().<Void>build();
                 })
+                .orElse(ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            log.error("Error deleting learning plan with id: {}", id, e);
+            throw new RuntimeException("Failed to delete learning plan", e);
+        }
+    }
 
 }  
