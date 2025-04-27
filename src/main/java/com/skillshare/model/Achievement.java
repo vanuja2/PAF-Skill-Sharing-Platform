@@ -10,6 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Achievement
+public class Achievement {
+    private String type;
+    private String title;
+    private String description;
+    private String date;
+}
 
 public class Achievement {
     
