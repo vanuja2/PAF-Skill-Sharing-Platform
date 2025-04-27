@@ -12,3 +12,6 @@ import lombok.NoArgsConstructor;
 public class ProjectDetails {
     private String name;
     private String description;
+    private String status;
+    private String githubUrl;
+}
