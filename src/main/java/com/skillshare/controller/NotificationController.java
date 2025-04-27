@@ -50,4 +50,23 @@ public class NotificationController {
             throw new RuntimeException("Failed to fetch unread count", e);
         }
     }
+
+    @PutMapping("/{id}/read")
+    public ResponseEntity<Notification> markAsRead(@PathVariable String id) {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String userId = auth.getName();
+            
+            return notificationRepository.findById(id)
+                .filter(notification -> notification.getUserId().equals(userId))
+                .map(notification -> {
+                    notification.setRead(true);
+                    return ResponseEntity.ok(notificationRepository.save(notification));
+                })
+                .orElse(ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            log.error("Error marking notification as read: {}", id, e);
+            throw new RuntimeException("Failed to mark notification as read", e);
+        }
+    }
 }
