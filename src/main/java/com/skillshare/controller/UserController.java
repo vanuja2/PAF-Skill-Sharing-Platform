@@ -181,3 +181,32 @@ public ResponseEntity<Map<String, Object>> followUser(@PathVariable String id) {
         throw new RuntimeException("Failed to follow user", e);
     }
 }
+@DeleteMapping("/{id}/follow")
+public ResponseEntity<Map<String, Object>> unfollowUser(@PathVariable String id) {
+    try {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String followerId = auth.getName();
+
+        User follower = userRepository.findById(followerId).orElse(null);
+        User following = userRepository.findById(id).orElse(null);
+
+        if (follower == null || following == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        follower.getFollowingIds().remove(id);
+        following.getFollowerIds().remove(followerId);
+
+        userRepository.save(follower);
+        userRepository.save(following);
+
+        return ResponseEntity.ok(Map.of(
+            "following", false,
+            "followersCount", following.getFollowerIds().size(),
+            "followingCount", following.getFollowingIds().size()
+        ));
+    } catch (Exception e) {
+        log.error("Error unfollowing user: {}", id, e);
+        throw new RuntimeException("Failed to unfollow user", e);
+    }
+}
