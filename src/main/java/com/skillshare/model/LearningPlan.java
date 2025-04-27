@@ -32,3 +32,8 @@ public class LearningPlan {
 
     @Builder.Default
     private List<Lesson> lessons = new ArrayList<>();
+
+    private String duration;
+    
+    @Field("created_at")
+    private Instant createdAt; 
