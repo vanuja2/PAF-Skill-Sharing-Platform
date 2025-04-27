@@ -9,7 +9,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
+public class ProjectDetails {
+    private String name;
+    private String description;
+    private String status;
+    private String githubUrl;
+}
 public class ProgressTemplate {
     
 }
