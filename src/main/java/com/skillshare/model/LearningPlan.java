@@ -29,3 +29,6 @@ public class LearningPlan {
     private String skillLevel;
     
     private String description;
+
+    @Builder.Default
+    private List<Lesson> lessons = new ArrayList<>();
