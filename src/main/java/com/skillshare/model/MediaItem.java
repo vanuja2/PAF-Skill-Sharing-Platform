@@ -15,7 +15,9 @@ public class MediaItem {
     private String filename;
     private String contentType;
     private String description;
-   
+    private String type;
+    private long size;
+    private String createdAt;
     
     @Transient
     private byte[] data;
