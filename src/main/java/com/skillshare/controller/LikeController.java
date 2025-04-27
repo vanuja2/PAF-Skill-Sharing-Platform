@@ -88,6 +88,9 @@ public ResponseEntity<Like> addLike(@PathVariable String postId) {
     }
 }
 
-
+@DeleteMapping
+    public ResponseEntity<Void> removeLike(@PathVariable String postId) {
+       
+    }
 
 }
