@@ -125,3 +125,24 @@ public ResponseEntity<User> updateUser(
         throw new RuntimeException("Failed to update user", e);
     }
 }
+@DeleteMapping("/{id}")
+public ResponseEntity<Void> deleteUser(@PathVariable String id) {
+    try {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userId = auth.getName();
+
+        if (!userId.equals(id)) {
+            return ResponseEntity.status(403).build();
+        }
+
+        return userRepository.findById(id)
+            .map(user -> {
+                userRepository.deleteById(id);
+                return ResponseEntity.ok().<Void>build();
+            })
+            .orElse(ResponseEntity.notFound().build());
+    } catch (Exception e) {
+        log.error("Error deleting user: {}", id, e);
+        throw new RuntimeException("Failed to delete user", e);
+    }
+}
