@@ -35,4 +35,12 @@ public class LikeController {
             throw new RuntimeException("Failed to fetch likes", e);
         }
     }
+
+    @PostMapping
+public ResponseEntity<Like> addLike(@PathVariable String postId) {
+    
+}
+
+
+
 }
