@@ -230,3 +230,22 @@ public ResponseEntity<List<User>> getFollowers(@PathVariable String id) {
         throw new RuntimeException("Failed to fetch followers", e);
     }
 }
+@GetMapping("/{id}/following")
+public ResponseEntity<List<User>> getFollowing(@PathVariable String id) {
+    try {
+        return userRepository.findById(id)
+            .map(user -> {
+                List<User> following = userRepository.findAllById(user.getFollowingIds());
+                following.forEach(followed -> {
+                    followed.setPassword(null);
+                    followed.setEmail(null);
+                    followed.setAddress(null);
+                    followed.setBirthday(null);
+                });
+                return ResponseEntity.ok(following);
+            })
+            .orElse(ResponseEntity.notFound().build());
+    } catch (Exception e) {
+        log.error("Error fetching following for user: {}", id, e);
+        throw new RuntimeException("Failed to fetch following", e);
+    }
