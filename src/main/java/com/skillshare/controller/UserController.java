@@ -249,3 +249,34 @@ public ResponseEntity<List<User>> getFollowing(@PathVariable String id) {
         log.error("Error fetching following for user: {}", id, e);
         throw new RuntimeException("Failed to fetch following", e);
     }
+    @PutMapping("/{id}/profile-picture")
+    public ResponseEntity<?> uploadProfilePicture(
+        @PathVariable String id,
+        @RequestParam("image") MultipartFile image,
+        @RequestParam(value = "description", required = false) String description
+    ) {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String userId = auth.getName();
+    
+            if (!userId.equals(id)) {
+                return ResponseEntity.status(403).build();
+            }
+    
+            // Save image via MediaService
+            MediaItem mediaItem = mediaService.saveMedia(image, description);
+    
+            return userRepository.findById(id)
+                .map(user -> {
+                    user.setAvatarUrl("/api/media/" + mediaItem.getId()); // URL to fetch the image
+                    user.setUpdatedAt(Instant.now());
+                    userRepository.save(user);
+                    return ResponseEntity.ok().body(Map.of("avatarUrl", user.getAvatarUrl()));
+                })
+                .orElse(ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            log.error("Failed to upload profile picture for user {}", id, e);
+            return ResponseEntity.status(500).body("Failed to upload profile picture");
+        }
+        }
+    }
