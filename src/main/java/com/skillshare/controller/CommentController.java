@@ -1,25 +1,20 @@
 package com.skillshare.controller;
 
-import java.time.Instant;
-import java.util.List;
-
-import javax.management.Notification;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.skillshare.model.Comment;
+import com.skillshare.model.Notification;
+import com.skillshare.repository.CommentRepository;
+import com.skillshare.repository.NotificationRepository;
 import com.skillshare.repository.PostRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.Instant;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -141,7 +136,32 @@ public class CommentController {
         @PathVariable String postId,
         @PathVariable String commentId
     ) {
-        
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String userId = auth.getName();
+            
+            log.debug("Deleting comment: {} for post: {} by user: {}", commentId, postId, userId);
+            
+            commentRepository.findById(commentId)
+                .ifPresentOrElse(
+                    comment -> {
+                        // Verify ownership
+                        if (!comment.getUserId().equals(userId)) {
+                            throw new RuntimeException("Not authorized to delete this comment");
+                        }
+                        commentRepository.deleteById(commentId);
+                    },
+                    () -> {
+                        throw new RuntimeException("Comment not found");
+                    }
+                );
+            
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            log.error("Error deleting comment: {} for post: {}", commentId, postId, e);
+            throw new RuntimeException("Failed to delete comment", e);
+        }
+
     }
 
 
