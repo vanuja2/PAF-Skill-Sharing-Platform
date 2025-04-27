@@ -69,4 +69,23 @@ public class NotificationController {
             throw new RuntimeException("Failed to mark notification as read", e);
         }
     }
+
+    @PutMapping("/read-all")
+    public ResponseEntity<Void> markAllAsRead() {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String userId = auth.getName();
+            
+            List<Notification> unreadNotifications = 
+                notificationRepository.findByUserIdAndReadOrderByCreatedAtDesc(userId, false);
+                
+            unreadNotifications.forEach(notification -> notification.setRead(true));
+            notificationRepository.saveAll(unreadNotifications);
+            
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            log.error("Error marking all notifications as read", e);
+            throw new RuntimeException("Failed to mark all notifications as read", e);
+        }
+    }
 }
