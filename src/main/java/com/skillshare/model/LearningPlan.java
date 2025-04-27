@@ -36,7 +36,7 @@ public class LearningPlan {
     private String duration;
     
     @Field("created_at")
-    private Instant createdAt; 
+    private Instant createdAt;
 
     @Field("updated_at")
     private Instant updatedAt;
