@@ -36,4 +36,18 @@ public class NotificationController {
             throw new RuntimeException("Failed to fetch notifications", e);
         }
     }
+
+    @GetMapping("/unread-count")
+    public ResponseEntity<Map<String, Long>> getUnreadCount() {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String userId = auth.getName();
+            
+            long count = notificationRepository.countByUserIdAndRead(userId, false);
+            return ResponseEntity.ok(Map.of("count", count));
+        } catch (Exception e) {
+            log.error("Error fetching unread notification count", e);
+            throw new RuntimeException("Failed to fetch unread count", e);
+        }
+    }
 }
