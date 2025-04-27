@@ -15,6 +15,4 @@ public class ProjectDetails {
     private String status;
     private String githubUrl;
 }
-public class ProgressTemplate {
-    
-}
+
