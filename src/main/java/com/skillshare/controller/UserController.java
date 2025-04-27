@@ -47,3 +47,44 @@ public class UserController {
             return ResponseEntity.status(500).body(null);
         }
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUser(@PathVariable String id) {
+        try {
+            return userRepository.findById(id)
+                .map(user -> {
+                    // Clear sensitive data
+                    user.setPassword(null);
+                    user.setEmail(null);
+                    user.setAddress(null);
+                    user.setBirthday(null);
+                    return ResponseEntity.ok(user);
+                })
+                .orElse(ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            log.error("Error fetching user: {}", id, e);
+            throw new RuntimeException("Failed to fetch user", e);
+        }
+    }
+
+    @GetMapping("/{id}/private")
+public ResponseEntity<User> getPrivateProfile(@PathVariable String id) {
+    try {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userId = auth.getName();
+
+        // Users can only access their own private profile
+        if (!userId.equals(id)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        return userRepository.findById(id)
+            .map(user -> {
+                user.setPassword(null);  // Don't expose the password
+                return ResponseEntity.ok(user);
+            })
+            .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());  // Return 404 if user is not found
+    } catch (Exception e) {
+        log.error("Error fetching private profile for user ID: {}", id, e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();  // Return 500 on any error
+    }
+}
