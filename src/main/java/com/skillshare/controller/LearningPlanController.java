@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -83,6 +84,18 @@ public class LearningPlanController {
         } catch (Exception e) {
             log.error("Error creating learning plan", e);
             throw new RuntimeException("Failed to create learning plan", e);
+        }
+    }
+
+     @GetMapping("/{id}")
+    public ResponseEntity<LearningPlan> getLearningPlan(@PathVariable String id) {
+        try {
+            return learningPlanRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            log.error("Error fetching learning plan with id: {}", id, e);
+            throw new RuntimeException("Failed to fetch learning plan", e);
         }
     }
 
