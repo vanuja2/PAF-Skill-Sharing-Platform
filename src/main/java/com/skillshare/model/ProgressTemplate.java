@@ -24,5 +24,8 @@ public class ProgressTemplate {
 
     @Field("project_details")
     private ProjectDetails projectDetails;
+
+    @Field("certification_details")
+    private CertificationDetails certificationDetails;
     
 }
