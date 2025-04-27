@@ -146,3 +146,38 @@ public ResponseEntity<Void> deleteUser(@PathVariable String id) {
         throw new RuntimeException("Failed to delete user", e);
     }
 }
+@PostMapping("/{id}/follow")
+public ResponseEntity<Map<String, Object>> followUser(@PathVariable String id) {
+    try {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String followerId = auth.getName();
+
+        if (followerId.equals(id)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        User follower = userRepository.findById(followerId).orElse(null);
+        User following = userRepository.findById(id).orElse(null);
+
+        if (follower == null || following == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if (!follower.getFollowingIds().contains(id)) {
+            follower.getFollowingIds().add(id);
+            following.getFollowerIds().add(followerId);
+
+            userRepository.save(follower);
+            userRepository.save(following);
+        }
+
+        return ResponseEntity.ok(Map.of(
+            "following", true,
+            "followersCount", following.getFollowerIds().size(),
+            "followingCount", following.getFollowingIds().size()
+        ));
+    } catch (Exception e) {
+        log.error("Error following user: {}", id, e);
+        throw new RuntimeException("Failed to follow user", e);
+    }
+}
