@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -94,6 +95,15 @@ public class CommentController {
             log.error("Error creating comment for post: {}", postId, e);
             throw new RuntimeException("Failed to create comment", e);
         }
+    }
+
+    @PutMapping("/{commentId}")
+    public ResponseEntity<Comment> updateComment(
+        @PathVariable String postId,
+        @PathVariable String commentId,
+        @RequestBody Comment comment
+    ) {
+        
     }
 
 
