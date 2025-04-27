@@ -137,7 +137,7 @@ public class LearningPlanController {
             throw new RuntimeException("Failed to update learning plan", e);
         }
     }
-     @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLearningPlan(@PathVariable String id) {
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -158,5 +158,4 @@ public class LearningPlanController {
             throw new RuntimeException("Failed to delete learning plan", e);
         }
     }
-
-}  
+}
