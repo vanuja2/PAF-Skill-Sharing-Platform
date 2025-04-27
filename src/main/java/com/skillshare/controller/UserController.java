@@ -88,3 +88,40 @@ public ResponseEntity<User> getPrivateProfile(@PathVariable String id) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();  // Return 500 on any error
     }
 }
+@PutMapping("/{id}")
+public ResponseEntity<User> updateUser(
+    @PathVariable String id,
+    @RequestBody User updatedUser
+) {
+    try {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userId = auth.getName();
+
+        if (!userId.equals(id)) {
+            return ResponseEntity.status(403).build();
+        }
+
+        return userRepository.findById(id)
+            .map(existingUser -> {
+                existingUser.setFirstName(updatedUser.getFirstName());
+                existingUser.setLastName(updatedUser.getLastName());
+                existingUser.setAddress(updatedUser.getAddress());
+                existingUser.setBirthday(updatedUser.getBirthday());
+                existingUser.setAvatarUrl(updatedUser.getAvatarUrl());
+                existingUser.setBio(updatedUser.getBio());
+                existingUser.setUpdatedAt(Instant.now());
+
+                if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+                    existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+                }
+
+                User savedUser = userRepository.save(existingUser);
+                savedUser.setPassword(null);
+                return ResponseEntity.ok(savedUser);
+            })
+            .orElse(ResponseEntity.notFound().build());
+    } catch (Exception e) {
+        log.error("Error updating user: {}", id, e);
+        throw new RuntimeException("Failed to update user", e);
+    }
+}
