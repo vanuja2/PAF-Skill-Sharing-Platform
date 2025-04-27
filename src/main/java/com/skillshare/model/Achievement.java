@@ -1,5 +1,6 @@
 package com.skillshare.model;
 
-public class Achievement {
-    
-}
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
