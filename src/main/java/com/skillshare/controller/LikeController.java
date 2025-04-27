@@ -90,7 +90,25 @@ public ResponseEntity<Like> addLike(@PathVariable String postId) {
 
 @DeleteMapping
     public ResponseEntity<Void> removeLike(@PathVariable String postId) {
-       
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String userId = auth.getName();
+            
+            log.debug("Removing like for post: {} by user: {}", postId, userId);
+            
+            likeRepository.findByPostIdAndUserId(postId, userId)
+                .ifPresentOrElse(
+                    like -> likeRepository.deleteById(like.getId()),
+                    () -> {
+                        throw new RuntimeException("Like not found");
+                    }
+                );
+            
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            log.error("Error removing like for post: {}", postId, e);
+            throw new RuntimeException("Failed to remove like", e);
+        }
     }
 
 }
