@@ -210,3 +210,23 @@ public ResponseEntity<Map<String, Object>> unfollowUser(@PathVariable String id)
         throw new RuntimeException("Failed to unfollow user", e);
     }
 }
+@GetMapping("/{id}/followers")
+public ResponseEntity<List<User>> getFollowers(@PathVariable String id) {
+    try {
+        return userRepository.findById(id)
+            .map(user -> {
+                List<User> followers = userRepository.findAllById(user.getFollowerIds());
+                followers.forEach(follower -> {
+                    follower.setPassword(null);
+                    follower.setEmail(null);
+                    follower.setAddress(null);
+                    follower.setBirthday(null);
+                });
+                return ResponseEntity.ok(followers);
+            })
+            .orElse(ResponseEntity.notFound().build());
+    } catch (Exception e) {
+        log.error("Error fetching followers for user: {}", id, e);
+        throw new RuntimeException("Failed to fetch followers", e);
+    }
+}
