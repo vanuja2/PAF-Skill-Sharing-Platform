@@ -1,10 +1,16 @@
 package com.skillshare.controller;
 
+import java.time.Instant;
 import java.util.List;
 
+import javax.management.Notification;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,5 +40,61 @@ public class CommentController {
             throw new RuntimeException("Failed to fetch comments", e);
         }
     }
-    
+
+    @PostMapping
+    public ResponseEntity<Comment> createComment(@PathVariable String postId, @RequestBody Comment comment) {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String userId = auth.getName();
+            
+            log.debug("Creating comment for post: {} by user: {}", postId, userId);
+
+            // Create new comment object
+            Comment newComment = Comment.builder()
+                .postId(postId)
+                .userId(userId)
+                .content(comment.getContent())
+                .createdAt(Instant.now())
+                .updatedAt(Instant.now())
+                .build();
+
+            // Save the new comment
+            Comment savedComment = commentRepository.save(newComment);
+            log.debug("Comment created with id: {}", savedComment.getId());
+
+            // Retrieve the post owner id
+            try {
+                // Retrieve the post owner id
+                String postOwnerId = postRepository.findById(postId)
+                    .map(post -> post.getUserId())
+                    .orElseThrow(() -> new RuntimeException("Post not found"));
+            
+                log.info("Creating Notification for comment");
+                
+                // Create a notification for the post owner
+                Notification notification = new Notification();
+                notification.setUserId(postOwnerId);
+                notification.setActionUserId(userId);  // The user who made the comment
+                notification.setMessage("New comment on your post");
+                notification.setPostId(postId);
+                notification.setRead(false);
+                notification.setCreatedAt(Instant.now());
+            
+                // Save the notification
+                notificationRepository.save(notification);
+            
+            } catch (Exception e) {
+                log.error("Error while creating notification", e);
+            }            
+
+            // Return the response with the saved comment
+            return ResponseEntity.ok(savedComment);
+
+        } catch (Exception e) {
+            log.error("Error creating comment for post: {}", postId, e);
+            throw new RuntimeException("Failed to create comment", e);
+        }
+    }
+
+
 }
