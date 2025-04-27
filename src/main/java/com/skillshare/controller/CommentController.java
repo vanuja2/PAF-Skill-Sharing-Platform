@@ -103,7 +103,36 @@ public class CommentController {
         @PathVariable String commentId,
         @RequestBody Comment comment
     ) {
-        
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String userId = auth.getName();
+            
+            log.debug("Updating comment: {} for post: {} by user: {}", commentId, postId, userId);
+            
+            return commentRepository.findById(commentId)
+                .map(existingComment -> {
+                    // Verify ownership
+                    if (!existingComment.getUserId().equals(userId)) {
+                        throw new RuntimeException("Not authorized to update this comment");
+                    }
+                    
+                    Comment updatedComment = Comment.builder()
+                        .id(existingComment.getId())
+                        .postId(existingComment.getPostId())
+                        .userId(existingComment.getUserId())
+                        .content(comment.getContent())
+                        .createdAt(existingComment.getCreatedAt())
+                        .updatedAt(Instant.now())
+                        .build();
+                        
+                    return ResponseEntity.ok(commentRepository.save(updatedComment));
+                })
+                .orElseThrow(() -> new RuntimeException("Comment not found"));
+        } catch (Exception e) {
+            log.error("Error updating comment: {} for post: {}", commentId, postId, e);
+            throw new RuntimeException("Failed to update comment", e);
+        }
+
     }
 
 
