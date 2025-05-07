@@ -45,3 +45,25 @@ public class JwtService {
             .signWith(getSigningKey(), SignatureAlgorithm.HS256)
             .compact();
     }
+
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .setAllowedClockSkewSeconds(60) // 60 seconds grace period for clock differences
+                .build()
+                .parseClaimsJws(token);
+            return true;
+        } catch (ExpiredJwtException e) {
+            System.err.println("JWT expired: " + e.getMessage());
+        } catch (UnsupportedJwtException e) {
+            System.err.println("Unsupported JWT: " + e.getMessage());
+        } catch (MalformedJwtException e) {
+            System.err.println("Malformed JWT: " + e.getMessage());
+        } catch (SignatureException e) {
+            System.err.println("Invalid JWT signature: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.err.println("JWT claims string is empty: " + e.getMessage());
+        }
+        return false;
+    }
