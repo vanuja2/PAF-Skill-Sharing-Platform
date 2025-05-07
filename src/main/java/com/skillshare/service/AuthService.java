@@ -24,5 +24,12 @@ public class AuthService {
         return new AuthResponse(token, mapToUserResponse(user));
     }
 
-    
+    public AuthResponse register(
+        String email,
+        String password,
+        String firstName,
+        String lastName,
+        String address,
+        String birthday
+    ) 
 }
