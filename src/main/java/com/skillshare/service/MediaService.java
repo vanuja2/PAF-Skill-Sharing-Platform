@@ -66,7 +66,7 @@ public class MediaService {
             .createdAt(Instant.now().toString())
             .build();
     }
-    
+
     public MediaItem getMedia(String id) throws IOException {
         GridFSFile file = gridFsTemplate.findOne(
             Query.query(Criteria.where("_id").is(new ObjectId(id)))
@@ -94,7 +94,7 @@ public class MediaService {
             .createdAt(metadata.get("createdAt"))
             .build();
     }
-    //validatefile
+
     private void validateFile(MultipartFile file) {
         if (file.isEmpty()) {
             throw new IllegalArgumentException("File is empty");
@@ -125,7 +125,7 @@ public class MediaService {
             );
         }
     }
-    //mediatype
+//get MediaType
     private String getMediaType(String contentType) {
         if (contentType.startsWith("image/")) {
             return "image";
