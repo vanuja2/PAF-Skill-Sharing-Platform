@@ -58,7 +58,7 @@ public class LearningPlanController {
             throw new RuntimeException("Failed to fetch learning plans", e);
         }
     }
-
+//post mapping
     @PostMapping
     public ResponseEntity<LearningPlan> createLearningPlan(@RequestBody LearningPlan plan) {
         try {
