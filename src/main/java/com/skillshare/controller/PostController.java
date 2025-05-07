@@ -30,6 +30,7 @@ public class PostController {
             throw new RuntimeException("Failed to fetch posts", e);
         }
     }
+
     @PostMapping
     public ResponseEntity<Post> createPost(@RequestBody Post post) {
         try {
@@ -58,6 +59,7 @@ public class PostController {
             throw new RuntimeException("Failed to create post", e);
         }
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<Post> getPost(@PathVariable String id) {
         try {
