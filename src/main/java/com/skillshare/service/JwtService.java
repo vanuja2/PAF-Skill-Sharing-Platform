@@ -67,3 +67,19 @@ public class JwtService {
         }
         return false;
     }
+
+    public String getUserIdFromToken(String token) {
+        try {
+            Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .setAllowedClockSkewSeconds(60)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+            return claims.getSubject();
+        } catch (JwtException e) {
+            System.err.println("Failed to extract user ID from token: " + e.getMessage());
+            return null;
+        }
+    }
+}
