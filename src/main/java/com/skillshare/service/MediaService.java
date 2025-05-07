@@ -94,3 +94,34 @@ public class MediaService {
             .createdAt(metadata.get("createdAt"))
             .build();
     }
+
+    private void validateFile(MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("File is empty");
+        }
+        
+        if (file.getSize() > MAX_FILE_SIZE) {
+            throw new IllegalArgumentException("File size exceeds maximum limit of 50MB");
+        }
+        
+        String contentType = file.getContentType();
+        if (contentType == null) {
+            throw new IllegalArgumentException("Content type is null");
+        }
+        
+        boolean isValidType = false;
+        for (String[] types : ALLOWED_TYPES.values()) {
+            for (String type : types) {
+                if (contentType.equals(type)) {
+                    isValidType = true;
+                    break;
+                }
+            }
+        }
+        
+        if (!isValidType) {
+            throw new IllegalArgumentException(
+                "Invalid file type. Only images (JPEG, PNG, GIF) and videos (MP4, MOV) are allowed"
+            );
+        }
+    }
