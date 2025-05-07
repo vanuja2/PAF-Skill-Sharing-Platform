@@ -1,5 +1,6 @@
 package com.skillshare.repository;
 
+//import
 import com.skillshare.model.LearningPlan;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
