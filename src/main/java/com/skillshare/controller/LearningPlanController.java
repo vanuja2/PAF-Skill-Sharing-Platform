@@ -1,5 +1,5 @@
 package com.skillshare.controller;
-
+//importLcontriller
 import com.skillshare.model.LearningPlan;
 import com.skillshare.repository.LearningPlanRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LearningPlanController {
     private final LearningPlanRepository learningPlanRepository;
-
+//list lerningplan
     @GetMapping
     public ResponseEntity<List<LearningPlan>> getAllLearningPlans(
         @RequestParam(required = false) String skill,
@@ -37,7 +37,7 @@ public class LearningPlanController {
             } else {
                 plans = learningPlanRepository.findAll();
             }
-            
+            //returnRepo
             return ResponseEntity.ok(plans);
         } catch (Exception e) {
             log.error("Error fetching learning plans", e);
@@ -58,13 +58,13 @@ public class LearningPlanController {
             throw new RuntimeException("Failed to fetch learning plans", e);
         }
     }
-
+//post mapping createlerningplan
     @PostMapping
     public ResponseEntity<LearningPlan> createLearningPlan(@RequestBody LearningPlan plan) {
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String userId = auth.getName();
-            
+            //lerningplanForm
             LearningPlan newPlan = LearningPlan.builder()
                 .userId(userId)
                 .title(plan.getTitle())
@@ -85,7 +85,7 @@ public class LearningPlanController {
             throw new RuntimeException("Failed to create learning plan", e);
         }
     }
-
+//getmapping
     @GetMapping("/{id}")
     public ResponseEntity<LearningPlan> getLearningPlan(@PathVariable String id) {
         try {
@@ -97,7 +97,7 @@ public class LearningPlanController {
             throw new RuntimeException("Failed to fetch learning plan", e);
         }
     }
-
+//putmapping
     @PutMapping("/{id}")
     public ResponseEntity<LearningPlan> updateLearningPlan(
         @PathVariable String id,
@@ -106,7 +106,7 @@ public class LearningPlanController {
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String userId = auth.getName();
-            
+            //returnLearningrepo
             return learningPlanRepository.findById(id)
                 .map(existingPlan -> {
                     if (!existingPlan.getUserId().equals(userId)) {
@@ -135,10 +135,11 @@ public class LearningPlanController {
             throw new RuntimeException("Failed to update learning plan", e);
         }
     }
-
+//deletepart
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLearningPlan(@PathVariable String id) {
         try {
+            //securitycontextHolder
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String userId = auth.getName();
             

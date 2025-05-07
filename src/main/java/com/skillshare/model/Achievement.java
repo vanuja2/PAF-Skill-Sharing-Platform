@@ -1,0 +1,18 @@
+package com.skillshare.model;
+//import
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+//achivement type,tittle,description,date
+public class Achievement {
+    private String type;
+    private String title;
+    private String description;
+    private String date;
+}
