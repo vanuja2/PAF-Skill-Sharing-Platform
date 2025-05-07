@@ -85,7 +85,7 @@ public class LearningPlanController {
             throw new RuntimeException("Failed to create learning plan", e);
         }
     }
-
+//getmapping
     @GetMapping("/{id}")
     public ResponseEntity<LearningPlan> getLearningPlan(@PathVariable String id) {
         try {
