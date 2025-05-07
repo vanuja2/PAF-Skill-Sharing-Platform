@@ -135,7 +135,7 @@ public class LearningPlanController {
             throw new RuntimeException("Failed to update learning plan", e);
         }
     }
-
+//deletepart
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLearningPlan(@PathVariable String id) {
         try {
