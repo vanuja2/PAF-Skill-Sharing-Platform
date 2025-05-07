@@ -125,7 +125,7 @@ public class MediaService {
             );
         }
     }
-
+//get MediaType
     private String getMediaType(String contentType) {
         if (contentType.startsWith("image/")) {
             return "image";
