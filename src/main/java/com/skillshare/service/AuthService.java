@@ -1,8 +1,11 @@
 package com.skillshare.service;
 
+import java.time.Instant;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.skillshare.controller.AuthController.AuthResponse;
+import com.skillshare.controller.AuthController.UserResponse;
 
 public class AuthService {
     private final UserRepository userRepository;
@@ -38,4 +41,33 @@ public class AuthService {
             log.debug("Email already registered: {}", email);
             throw new RuntimeException("Email already registered");
         }
+         User user = User.builder()
+            .email(email)
+            .password(passwordEncoder.encode(password))
+            .firstName(firstName)
+            .lastName(lastName)
+            .address(address)
+            .birthday(birthday)
+            .createdAt(Instant.now())
+            .updatedAt(Instant.now())
+            .build();
+
+        User savedUser = userRepository.save(user);
+        log.debug("Successfully registered user: {}", email);
+        
+        String token = jwtService.generateToken(savedUser);
+        return new AuthResponse(token, mapToUserResponse(savedUser));
+    }
+
+    private UserResponse mapToUserResponse(User user) {
+        return new UserResponse(
+            user.getId(),
+            user.getEmail(),
+            user.getFirstName(),
+            user.getLastName(),
+            user.getAddress(),
+            user.getBirthday(),
+            user.getAvatarUrl()
+        );
+    }
 }
