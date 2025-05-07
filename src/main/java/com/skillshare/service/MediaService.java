@@ -66,3 +66,31 @@ public class MediaService {
             .createdAt(Instant.now().toString())
             .build();
     }
+
+    public MediaItem getMedia(String id) throws IOException {
+        GridFSFile file = gridFsTemplate.findOne(
+            Query.query(Criteria.where("_id").is(new ObjectId(id)))
+        );
+        
+        if (file == null) {
+            throw new RuntimeException("Media not found with id: " + id);
+        }
+        
+        // Get metadata
+        Map<String, String> metadata = new HashMap<>();
+        file.getMetadata().forEach((key, value) -> metadata.put(key, value.toString()));
+        
+        // Load file data
+        byte[] data = gridFsOperations.getResource(file).getContent().readAllBytes();
+        
+        return MediaItem.builder()
+            .id(file.getObjectId().toString())
+            .filename(file.getFilename())
+            .contentType(metadata.get("contentType"))
+            .description(metadata.get("description"))
+            .type(metadata.get("type"))
+            .size(file.getLength())
+            .data(data)
+            .createdAt(metadata.get("createdAt"))
+            .build();
+    }
