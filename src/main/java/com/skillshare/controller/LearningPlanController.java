@@ -97,7 +97,7 @@ public class LearningPlanController {
             throw new RuntimeException("Failed to fetch learning plan", e);
         }
     }
-
+//putmapping
     @PutMapping("/{id}")
     public ResponseEntity<LearningPlan> updateLearningPlan(
         @PathVariable String id,
