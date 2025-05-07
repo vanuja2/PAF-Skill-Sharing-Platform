@@ -31,5 +31,11 @@ public class AuthService {
         String lastName,
         String address,
         String birthday
-    ) 
+    ) {
+        log.debug("Attempting to register new user with email: {}", email);
+        
+        if (userRepository.existsByEmail(email)) {
+            log.debug("Email already registered: {}", email);
+            throw new RuntimeException("Email already registered");
+        }
 }
