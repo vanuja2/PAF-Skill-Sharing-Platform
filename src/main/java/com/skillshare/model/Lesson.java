@@ -12,7 +12,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-//lessonpart
+//lessonpart tittle and description
 public class Lesson {
     private String title;
     private String description;
