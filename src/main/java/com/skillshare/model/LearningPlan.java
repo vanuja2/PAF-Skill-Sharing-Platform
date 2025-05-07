@@ -21,25 +21,27 @@ public class LearningPlan {
     private String id;
     
     @Field("user_id")
+    //userID
     private String userId;
-    
+    // title,thumbnail,skill
     private String title;
     private String thumbnail;
     private String skill;
     
     @Field("skill_level")
+    //skillLevel,description,
     private String skillLevel;
     
     private String description;
     
     @Builder.Default
     private List<Lesson> lessons = new ArrayList<>();
-    
+    //duration
     private String duration;
-    
+    //CreateOne
     @Field("created_at")
     private Instant createdAt;
-    
+    //UpdateOne
     @Field("updated_at")
     private Instant updatedAt;
 }
