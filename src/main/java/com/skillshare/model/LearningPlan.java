@@ -23,7 +23,7 @@ public class LearningPlan {
     @Field("user_id")
     //userID
     private String userId;
-    
+    // title,thumbnail,skill
     private String title;
     private String thumbnail;
     private String skill;
