@@ -38,7 +38,7 @@ public class LearningPlan {
     private List<Lesson> lessons = new ArrayList<>();
     //duration
     private String duration;
-    
+    //CreateOne
     @Field("created_at")
     private Instant createdAt;
     //UpdateOne
