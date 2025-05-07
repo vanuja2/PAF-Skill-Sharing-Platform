@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+//achivement type,tittle,description,date
 public class Achievement {
     private String type;
     private String title;
