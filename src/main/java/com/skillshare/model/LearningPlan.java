@@ -29,6 +29,7 @@ public class LearningPlan {
     private String skill;
     
     @Field("skill_level")
+    //skillLevel,description,
     private String skillLevel;
     
     private String description;
