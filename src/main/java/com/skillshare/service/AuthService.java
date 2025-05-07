@@ -1,18 +1,24 @@
 package com.skillshare.service;
 
-import java.time.Instant;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import com.skillshare.controller.AuthController.AuthResponse;
 import com.skillshare.controller.AuthController.UserResponse;
+import com.skillshare.model.User;
+import com.skillshare.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import java.time.Instant;
 
+@Slf4j
+@Service
+@RequiredArgsConstructor
 public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
-     public AuthResponse login(String email, String password) {
+    public AuthResponse login(String email, String password) {
         log.debug("Attempting to login user with email: {}", email);
         User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new RuntimeException("User not found"));
@@ -41,7 +47,8 @@ public class AuthService {
             log.debug("Email already registered: {}", email);
             throw new RuntimeException("Email already registered");
         }
-         User user = User.builder()
+
+        User user = User.builder()
             .email(email)
             .password(passwordEncoder.encode(password))
             .firstName(firstName)
