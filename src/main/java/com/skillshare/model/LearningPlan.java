@@ -21,6 +21,7 @@ public class LearningPlan {
     private String id;
     
     @Field("user_id")
+    //userID
     private String userId;
     
     private String title;
