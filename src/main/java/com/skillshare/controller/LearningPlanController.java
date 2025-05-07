@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LearningPlanController {
     private final LearningPlanRepository learningPlanRepository;
-
+//list lerningplan
     @GetMapping
     public ResponseEntity<List<LearningPlan>> getAllLearningPlans(
         @RequestParam(required = false) String skill,
