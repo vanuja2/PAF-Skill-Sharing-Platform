@@ -31,4 +31,38 @@ public class MediaService {
         put("video", new String[]{"video/mp4", "video/quicktime"});
     }};
     
-    
+    public MediaItem saveMedia(MultipartFile file, String description) throws IOException {
+        validateFile(file);
+        
+        String contentType = file.getContentType();
+        String mediaType = getMediaType(contentType);
+        
+        // Create metadata
+        Map<String, String> metadata = new HashMap<>();
+        metadata.put("contentType", contentType);
+        metadata.put("type", mediaType);
+        if (description != null) {
+            metadata.put("description", description);
+        }
+        metadata.put("originalFilename", file.getOriginalFilename());
+        metadata.put("createdAt", Instant.now().toString());
+        
+        // Store file in GridFS
+        ObjectId fileId = gridFsTemplate.store(
+            file.getInputStream(),
+            file.getOriginalFilename(),
+            file.getContentType(),
+            metadata
+        );
+        
+        // Create and return MediaItem
+        return MediaItem.builder()
+            .id(fileId.toString())
+            .filename(file.getOriginalFilename())
+            .contentType(contentType)
+            .description(description)
+            .type(mediaType)
+            .size(file.getSize())
+            .createdAt(Instant.now().toString())
+            .build();
+    }
