@@ -139,6 +139,7 @@ public class LearningPlanController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLearningPlan(@PathVariable String id) {
         try {
+            //securitycontextHolder
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String userId = auth.getName();
             
