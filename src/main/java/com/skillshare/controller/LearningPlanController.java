@@ -64,7 +64,7 @@ public class LearningPlanController {
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String userId = auth.getName();
-            
+            //lerningplanForm
             LearningPlan newPlan = LearningPlan.builder()
                 .userId(userId)
                 .title(plan.getTitle())
