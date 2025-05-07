@@ -41,7 +41,7 @@ public class LearningPlan {
     
     @Field("created_at")
     private Instant createdAt;
-    
+    //UpdateOne
     @Field("updated_at")
     private Instant updatedAt;
 }
