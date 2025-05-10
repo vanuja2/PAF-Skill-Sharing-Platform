@@ -1,5 +1,6 @@
 package com.skillshare.service;
 
+<<<<<<< HEAD
 import com.skillshare.controller.AuthController.AuthResponse;
 import com.skillshare.controller.AuthController.UserResponse;
 import com.skillshare.model.User;
@@ -78,3 +79,8 @@ public class AuthService {
         );
     }
 }
+=======
+public class AuthService {
+    
+}
+>>>>>>> 988ecbd1ad0507e8aba73830dd69643697f20bb9
